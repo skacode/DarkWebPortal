@@ -41,4 +41,3 @@ RUN chmod +x /startapp.sh
 RUN set-cont-env APP_NAME "Tor Browser"
 
 RUN perl -0pi -e "s@        UI\.initSetting\('resize', resize\);\n@        const resizeSetting = UI.initSetting('resize', resize);\n        if (resizeSetting !== 'remote') {\n            WebUtil.writeSetting('resize', 'remote');\n            UI.updateSetting('resize');\n        }\n@" /opt/noVNC/app/ui.js
-

@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  tor-browser:
+    build:
+      context: ./tor_browser
+    container_name: tor-browser
+    ports:
+      - "5800:5800"
+    environment:
+      TZ: Europe/Madrid
+    volumes:
+      - tor-browser-config:/config
+    restart: unless-stopped
+
+  i2p-browser:
+    build:
+      context: ./i2p
+    container_name: i2p-browser
+    ports:
+      - "5900:5900"
+      - "4444:4444"
+      - "4447:4447"
+      - "7657:7657"
+    environment:
+      TZ: Etc/UTC
+      VNC_GEOMETRY: 1280x1024
+      VNC_DEPTH: 24
+    volumes:
+      - i2p-firefox-data:/root/.mozilla
+      - i2p-data:/root/.i2p
+      - i2p-vnc-data:/root/.vnc
+    restart: unless-stopped
+
+volumes:
+  tor-browser-config:
+  i2p-firefox-data:
+  i2p-data:
+  i2p-vnc-data:
