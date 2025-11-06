@@ -18,22 +18,20 @@ services:
       context: ./i2p
     container_name: i2p-browser
     ports:
-      - "5900:5900"
+      - "5801:5800"
+      - "5901:5900"
       - "4444:4444"
       - "4447:4447"
       - "7657:7657"
     environment:
       TZ: Etc/UTC
-      VNC_GEOMETRY: 1280x1024
-      VNC_DEPTH: 24
+      DISPLAY_WIDTH: 1280
+      DISPLAY_HEIGHT: 800
+      KEEP_APP_RUNNING: 1
     volumes:
-      - i2p-firefox-data:/root/.mozilla
-      - i2p-data:/root/.i2p
-      - i2p-vnc-data:/root/.vnc
+      - i2p-config:/config
     restart: unless-stopped
 
 volumes:
   tor-browser-config:
-  i2p-firefox-data:
-  i2p-data:
-  i2p-vnc-data:
+  i2p-config:
