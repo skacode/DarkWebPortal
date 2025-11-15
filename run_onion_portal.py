@@ -160,6 +160,20 @@ def start_stack(compose_file: Path) -> None:
         log_err(f"No se pudo iniciar Darkweb Portal (código {result.returncode}).")
 
 
+def connect_existing_stack(compose_file: Path) -> None:
+    log_info("Conectando a contenedores ya existentes (sin rebuild)...")
+    result = run_compose(compose_file, ["up", "-d", "--no-build"])
+    if result is None:
+        return
+    if result.returncode == 0:
+        log_ok("Contenedores existentes en ejecución.")
+        if wait_for_service(compose_file, I2P_SERVICE_NAME, timeout=60):
+            ensure_i2p_proxy_settings(compose_file)
+        print_service_urls()
+    else:
+        log_err(f"No se pudieron iniciar los contenedores existentes (código {result.returncode}).")
+
+
 def stop_stack(compose_file: Path) -> None:
     log_info("Deteniendo Darkweb Portal...")
     result = run_compose(compose_file, ["down"])
@@ -169,6 +183,17 @@ def stop_stack(compose_file: Path) -> None:
         log_ok("Darkweb Portal detenido.")
     else:
         log_err(f"No se pudo detener Darkweb Portal (código {result.returncode}).")
+
+
+def remove_containers(compose_file: Path) -> None:
+    log_info("Eliminando contenedores del Darkweb Portal...")
+    result = run_compose(compose_file, ["rm", "-sf"])
+    if result is None:
+        return
+    if result.returncode == 0:
+        log_ok("Contenedores eliminados.")
+    else:
+        log_err(f"No se pudieron eliminar los contenedores (código {result.returncode}).")
 
 
 def show_status(compose_file: Path) -> None:
@@ -298,11 +323,13 @@ ________                __     __      __      ___.     __________              
     print(f"    {C_MAGENTA}{logo_lines}{C_RESET}")
     print(f"                {C_BOLD}{C_MAGENTA}+-----------------------------------------+{C_RESET}")
     print(f"                {C_MAGENTA}|{C_RESET}     [1] Iniciar Darkweb Portal          {C_MAGENTA}|{C_RESET}")
-    print(f"                {C_MAGENTA}|{C_RESET}     [2] Detener Darkweb Portal          {C_MAGENTA}|{C_RESET}")
-    print(f"                {C_MAGENTA}|{C_RESET}     [3] Mostrar estado actual           {C_MAGENTA}|{C_RESET}")
-    print(f"                {C_MAGENTA}|{C_RESET}     [4] Ver logs en vivo                {C_MAGENTA}|{C_RESET}")
-    print(f"                {C_MAGENTA}|{C_RESET}     [5] Mostrar URLs de acceso          {C_MAGENTA}|{C_RESET}")
-    print(f"                {C_MAGENTA}|{C_RESET}     [6] Salir                           {C_MAGENTA}|{C_RESET}")
+    print(f"                {C_MAGENTA}|{C_RESET}     [2] Conectar a servicios            {C_MAGENTA}|{C_RESET}")
+    print(f"                {C_MAGENTA}|{C_RESET}     [3] Detener Darkweb Portal          {C_MAGENTA}|{C_RESET}")
+    print(f"                {C_MAGENTA}|{C_RESET}     [4] Eliminar contenedores           {C_MAGENTA}|{C_RESET}")
+    print(f"                {C_MAGENTA}|{C_RESET}     [5] Mostrar estado actual           {C_MAGENTA}|{C_RESET}")
+    print(f"                {C_MAGENTA}|{C_RESET}     [6] Ver logs en vivo                {C_MAGENTA}|{C_RESET}")
+    print(f"                {C_MAGENTA}|{C_RESET}     [7] Mostrar URLs de acceso          {C_MAGENTA}|{C_RESET}")
+    print(f"                {C_MAGENTA}|{C_RESET}     [8] Salir                           {C_MAGENTA}|{C_RESET}")
     print(f"                {C_BOLD}{C_MAGENTA}+-----------------------------------------+{C_RESET}")
 
 
@@ -327,7 +354,7 @@ def main() -> None:
     while True:
         print_menu()
         try:
-            choice = input("Selecciona una opción [1-6]: ").strip().lower()
+            choice = input("Selecciona una opción [1-8]: ").strip().lower()
         except EOFError:
             print()
             return
@@ -336,18 +363,24 @@ def main() -> None:
             start_stack(compose_path)
             back_to_menu()
         elif choice == "2":
-            stop_stack(compose_path)
+            connect_existing_stack(compose_path)
             back_to_menu()
         elif choice == "3":
-            show_status(compose_path)
+            stop_stack(compose_path)
             back_to_menu()
         elif choice == "4":
-            show_logs(compose_path)
+            remove_containers(compose_path)
             back_to_menu()
         elif choice == "5":
+            show_status(compose_path)
+            back_to_menu()
+        elif choice == "6":
+            show_logs(compose_path)
+            back_to_menu()
+        elif choice == "7":
             print_service_urls()
             back_to_menu()
-        elif choice == "6" or choice in {"q", "quit", "salir", "exit"}:
+        elif choice == "8" or choice in {"q", "quit", "salir", "exit"}:
             print("Hasta pronto.")
             return
         else:

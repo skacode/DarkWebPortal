@@ -143,8 +143,10 @@ if [ "${has_xdotool}" -eq 1 ] || [ "${has_wmctrl}" -eq 1 ]; then
                     run_as_app wmctrl -ir "${wmctrl_id}" -b remove,maximized_vert,maximized_horz >/dev/null 2>&1 || true
                     run_as_app wmctrl -ir "${wmctrl_id}" -b add,maximized_vert,maximized_horz >/dev/null 2>&1 || true
                     run_as_app wmctrl -ir "${wmctrl_id}" -e 0,0,0,-1,-1 >/dev/null 2>&1 || true
+                    run_as_app wmctrl -ir "${wmctrl_id}" -b add,fullscreen >/dev/null 2>&1 || true
                 fi
                 run_as_app xdotool windowactivate "${window_id}" >/dev/null 2>&1 || true
+                run_as_app xdotool key --window "${window_id}" F11 >/dev/null 2>&1 || true
                 break
             fi
         elif [ "${has_wmctrl}" -eq 1 ]; then
@@ -153,6 +155,7 @@ if [ "${has_xdotool}" -eq 1 ] || [ "${has_wmctrl}" -eq 1 ]; then
                 run_as_app wmctrl -ir "${wmctrl_id}" -b remove,maximized_vert,maximized_horz >/dev/null 2>&1 || true
                 run_as_app wmctrl -ir "${wmctrl_id}" -b add,maximized_vert,maximized_horz >/dev/null 2>&1 || true
                 run_as_app wmctrl -ir "${wmctrl_id}" -e 0,0,0,-1,-1 >/dev/null 2>&1 || true
+                run_as_app wmctrl -ir "${wmctrl_id}" -b add,fullscreen >/dev/null 2>&1 || true
                 break
             fi
         fi
