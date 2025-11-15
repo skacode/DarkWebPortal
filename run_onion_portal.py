@@ -64,9 +64,11 @@ I2P_PROXY_PREFS = {
     "network.proxy.ssl": "127.0.0.1",
     "network.proxy.ssl_port": 4444,
     "network.proxy.type": 1,
-    "network.proxy.no_proxies_on": "",
+    "network.proxy.no_proxies_on": "localhost,127.0.0.1",
     "network.proxy.allow_hijacking_localhost": True,
     "network.proxy.socks_remote_dns": False,
+    "media.peerconnection.ice.proxy_only": True,
+    "keyword.enabled": False,
 }
 _COMPOSE_CMD: Optional[List[str]] = None
 

@@ -150,12 +150,14 @@ user_pref("network.proxy.socks_version", 5);
 user_pref("network.proxy.ssl", "127.0.0.1");
 user_pref("network.proxy.ssl_port", 4444);
 user_pref("network.proxy.type", 1);
-user_pref("network.proxy.no_proxies_on", "");
+user_pref("network.proxy.no_proxies_on", "localhost,127.0.0.1");
 user_pref("network.proxy.allow_hijacking_localhost", true);
 user_pref("network.proxy.socks_remote_dns", false);
 user_pref("signon.rememberSignons", false);
 user_pref("toolkit.telemetry.enabled", false);
 user_pref("browser.sessionstore.resume_from_crash", false);
+user_pref("media.peerconnection.ice.proxy_only", true);
+user_pref("keyword.enabled", false);
 EOF
 
 RUN set -eux; \
