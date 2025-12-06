@@ -35,6 +35,20 @@ RUN set -eux; \
     rm -rf "${tmpdir}"; \
     chown -R 1000:1000 /opt/tor-browser
 
+RUN set -eux; \
+    profile_dir="/opt/tor-browser/Browser/TorBrowser/Data/Browser/profile.default"; \
+    mkdir -p "${profile_dir}"; \
+    cat > "${profile_dir}/user.js" <<'EOF'
+user_pref("extensions.torbutton.security_slider", 1);
+user_pref("extensions.torbutton.security_level", 1);
+user_pref("extensions.torbutton.security_custom", false);
+user_pref("javascript.enabled", false);
+user_pref("media.peerconnection.enabled", false);
+user_pref("webgl.disabled", true);
+user_pref("dom.webaudio.enabled", false);
+user_pref("pdfjs.enableScripting", false);
+EOF
+
 COPY startapp.sh /startapp.sh
 RUN chmod +x /startapp.sh
 
